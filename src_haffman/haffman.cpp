@@ -1,15 +1,16 @@
 #include "haffman.h"
 //--------------------------------------------------------------------
 
-string read_file(const filesystem::path& filePath) {
+
+string read_file(const std::filesystem::path& filePath) {
 // string read_file(const string & filePath) {   
     string data_file;
     string line;
-    ifstream inFile;
+    std::ifstream inFile;
 
     inFile.open(filePath);
     if (!inFile.is_open()) {
-        cerr << "Error open file(read file)!\n";
+        std::cerr << "Error open file(read file)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
     while (getline(inFile, line)) {    // читаем по строчно 
@@ -38,7 +39,7 @@ map<char, int> getFreqSymbols(string file_data) {
 //--------------------------------------------------------------------
 void print_dict(map<char, int> dict_freq) {
     for (auto iter(dict_freq.begin()); iter != dict_freq.end(); iter++) {
-        cout << iter->first << " : " << iter->second << endl;
+        std::cout << iter->first << " : " << iter->second << std::endl;
     }
 }
 //--------------------------------------------------------------------
@@ -47,7 +48,7 @@ void print_codes_symbols(map<char, int> haffman_codes){
     for (auto& pair : haffman_codes) {
     std::cout << pair.first << " : " << pair.second << std::endl;
     }
-    cout << endl;
+    std::cout << std::endl;
 }
 
 //--------------------------------------------------------------------
@@ -56,7 +57,7 @@ Node::Node(char ch, int w) : symbol(ch), weight(w), code(""), left(nullptr), rig
 }
 //--------------------------------------------------------------------
 Node* buildTreeHaffman(map<char, int> symbols_freq) {
-    priority_queue<Node*, vector<Node*>, CompareNodes> heap;   // приоритетная очередь FIFO
+    std::priority_queue<Node*, std::vector<Node*>, CompareNodes> heap;   // приоритетная очередь FIFO
     //template <class Type, class Container= vector <Type>, class Compare= less <typename Container ::value_type>>
     //CompareNodes устанавливает критерий сравнения в кучи
 
@@ -113,15 +114,15 @@ string getFileNameWithoutExtension(const std::string& fileName) {
 
 
 //--------------------------------------------------------------------
-void data_compression_haffman(filesystem::path& inFilePath){
+void data_compression_haffman(std::filesystem::path& inFilePath){
 
-    filesystem::path file_name = inFilePath.filename();
+    std::filesystem::path file_name = inFilePath.filename();
     string filename = getFileNameWithoutExtension(file_name.string());
 
     string new_name_file = filename + "CompressHaffman.txt";
 
     map<char, string> haffman_codes; // для хранения закодированных символов 
-    ofstream outFile;
+    std::ofstream outFile;
 
     string data_file = read_file(inFilePath); //читаем файл
 
@@ -133,7 +134,7 @@ void data_compression_haffman(filesystem::path& inFilePath){
     // записываем в файл сжатую информацию
     outFile.open(inFilePath);
     if (!outFile.is_open()) {
-        cerr << "Error open file(compression)!\n";
+        std::cerr << "Error open file(compression)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
     //сжимаем в соответствии с кодами в словаре

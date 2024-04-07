@@ -6,13 +6,14 @@
 #include <vector>   //для хранения кучи 
 #include <queue>
 #include <filesystem> // для работы с файловой системой 
-using namespace std;
+using std::string;
+using std::map;
 //---------------------------------
 
 
 map<char, int> getFreqSymbols(string);     // получаем словарь {символ : частота}
 
-string read_file(const filesystem::path& filePath);                  // чтение файла....Может нужно использовать буфер??? 
+string read_file(const std::filesystem::path& filePath);                  // чтение файла....Может нужно использовать буфер??? 
 //string read_file(const string& filePath);                                                      // передаем константную ссылку на путь используя filesystem
 
 
@@ -40,11 +41,11 @@ struct CompareNodes {
 };
 
 //построение дерева хаффмана 
-Node* buildTreeHaffman(map<char, int> symbols_freq);
+Node* buildTreeHaffman(std :: map<char, int> symbols_freq);
 
 //кодирование по построенному дереву. Результат в haffman_codes
 void generate_haffman_codes(Node* root, map<char, string>& haffman_codes); // передаем ссылку, чтобы словарь изменялся глобально во время работы фукнкции
 
 
 
-void data_compression_haffman(filesystem::path& filePath);
+void data_compression_haffman(std :: filesystem::path& filePath);
