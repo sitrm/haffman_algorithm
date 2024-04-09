@@ -1,8 +1,8 @@
 #include "haffman.h"
 //--------------------------------------------------------------------
 
- //TODO надо бы учитвать перенос на другую сторону........ 
-string read_file(const std::filesystem::path& filePath) {
+
+string read_file(const fs::path& filePath) {
 // string read_file(const string & filePath) {   
     string data_file;
     string line;
@@ -23,7 +23,7 @@ string read_file(const std::filesystem::path& filePath) {
 }
 //--------------------------------------------------------------------
 
-map<char, int> getFreqSymbols(string file_data) {
+map<char, int> getFreqSymbols(const string file_data) {
     map<char, int> dict_freq;       // словаря { символ : частота}
     for (char ch : file_data) {
         if (dict_freq.count(ch)) {  // если символ уже есть в словере
@@ -115,7 +115,7 @@ string getFileNameWithoutExtension(const std::string& fileName) {
 
 //--------------------------------------------------------------------
 //кодирование данных переданных по пути в новый созданный файл; return: словарь кодирования/декодирования
-map<char, string> data_compression_haffman(std::filesystem::path& inFilePath){
+map<char, string> data_compression_haffman(fs::path& inFilePath){
 
     std::filesystem::path file_name = inFilePath.filename();            //  получаем имя файла из пути
     string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
@@ -149,7 +149,7 @@ map<char, string> data_compression_haffman(std::filesystem::path& inFilePath){
 
 //-------------------------------------------------------------------------------------
 // декодирование данных. Принимает путь до файла закодированных даннных и указатель на корень построенного дерева хаффмана
-void decoding_data_haffman_algo(std :: filesystem::path& filePath,  struct Node* root){
+void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root){
 
     std::filesystem::path file_name = filePath.filename();            //  получаем имя файла из пути
     string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
@@ -174,10 +174,10 @@ void decoding_data_haffman_algo(std :: filesystem::path& filePath,  struct Node*
         else if (s =='1')
             curr = curr->right;
         //когда достугнули последнего узла
-        if(curr->left == (nullptr ) && curr->right == (nullptr)){
+        if(curr->left == (nullptr) && curr->right == (nullptr)){
             outFile << curr->symbol;
             curr = root;
         }
     }
-    outFile.close();
+    outFile.close();  // не забываем закрыть файл
 }
