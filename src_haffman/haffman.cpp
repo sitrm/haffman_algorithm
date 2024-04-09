@@ -1,7 +1,7 @@
 #include "haffman.h"
 //--------------------------------------------------------------------
 
-
+ //TODO надо бы учитвать перенос на другую сторону........ 
 string read_file(const std::filesystem::path& filePath) {
 // string read_file(const string & filePath) {   
     string data_file;
@@ -15,7 +15,7 @@ string read_file(const std::filesystem::path& filePath) {
     }
     while (getline(inFile, line)) {    // читаем по строчно 
 
-        data_file += line;           // +"\n";
+        data_file += line +"\n";
     }
     inFile.close();
 
@@ -174,7 +174,7 @@ void decoding_data_haffman_algo(std :: filesystem::path& filePath,  struct Node*
         else if (s =='1')
             curr = curr->right;
         //когда достугнули последнего узла
-        if (curr->left == (nullptr ) && curr->right == (nullptr)){
+        if(curr->left == (nullptr ) && curr->right == (nullptr)){
             outFile << curr->symbol;
             curr = root;
         }
