@@ -48,4 +48,6 @@ void generate_haffman_codes(Node* root, map<char, string>& haffman_codes); // п
 
 
 
-void data_compression_haffman(std :: filesystem::path& filePath);
+map<char, string> data_compression_haffman(std :: filesystem::path& filePath);
+
+void decoding_data_haffman_algo(std::filesystem::path& filePath,  struct Node* root);

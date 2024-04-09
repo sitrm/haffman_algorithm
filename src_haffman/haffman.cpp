@@ -114,10 +114,11 @@ string getFileNameWithoutExtension(const std::string& fileName) {
 
 
 //--------------------------------------------------------------------
-void data_compression_haffman(std::filesystem::path& inFilePath){
+//кодирование данных переданных по пути в новый созданный файл; return: словарь кодирования/декодирования
+map<char, string> data_compression_haffman(std::filesystem::path& inFilePath){
 
-    std::filesystem::path file_name = inFilePath.filename();
-    string filename = getFileNameWithoutExtension(file_name.string());
+    std::filesystem::path file_name = inFilePath.filename();            //  получаем имя файла из пути
+    string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
 
     string new_name_file = filename + "CompressHaffman.txt";
 
@@ -130,7 +131,7 @@ void data_compression_haffman(std::filesystem::path& inFilePath){
 
     generate_haffman_codes(root_tree, haffman_codes);               //  обходим дерево и кодируем символы 
 
-    inFilePath.replace_filename(new_name_file);
+    inFilePath.replace_filename(new_name_file);       //переименовали в пути до файла имя файла на новое 
     // записываем в файл сжатую информацию
     outFile.open(inFilePath);
     if (!outFile.is_open()) {
@@ -142,5 +143,41 @@ void data_compression_haffman(std::filesystem::path& inFilePath){
         outFile << haffman_codes[ch];
     }
 
+    outFile.close();
+    return haffman_codes;
+}
+
+//-------------------------------------------------------------------------------------
+// декодирование данных. Принимает путь до файла закодированных даннных и указатель на корень построенного дерева хаффмана
+void decoding_data_haffman_algo(std :: filesystem::path& filePath,  struct Node* root){
+
+    std::filesystem::path file_name = filePath.filename();            //  получаем имя файла из пути
+    string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
+
+    string data_file = read_file(filePath); 
+    string new_name_file = filename + "decodeHaffman.txt";
+    
+    std::ofstream outFile;  
+    filePath.replace_filename(new_name_file);
+
+    outFile.open(filePath);
+    if (!outFile.is_open()) {
+        std::cerr << "Error open file(compression)!\n";
+        exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
+    }
+    struct Node* curr = root;
+    
+    for (char s : data_file){
+
+        if (s == '0')
+            curr = curr->left;
+        else if (s =='1')
+            curr = curr->right;
+        //когда достугнули последнего узла
+        if (curr->left == (nullptr ) && curr->right == (nullptr)){
+            outFile << curr->symbol;
+            curr = root;
+        }
+    }
     outFile.close();
 }
