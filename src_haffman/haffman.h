@@ -52,3 +52,5 @@ void generate_haffman_codes(Node* root, map<char, string>& haffman_codes); // п
 map<char, string> data_compression_haffman(fs::path& filePath);
 
 void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root);
+
+std::vector<bool> stringToVectorBool(const std::string &str);

@@ -181,3 +181,21 @@ void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root){
     }
     outFile.close();  // не забываем закрыть файл
 }
+
+////так как в словре кодирования "1010" это строки, то необходимо перевести в вектор bool.Но пока не понятно зачем???....
+std::vector<bool> stringToVectorBool(const std::string &str){
+    std::vector<bool> vectorBool;
+
+    for( char ch : str){
+        if(ch == '0'){
+            vectorBool.push_back(false);
+        }else if( ch == '1'){
+            vectorBool.push_back(true);
+        }else{
+            std::cerr << "Error symbol(not 1/0)"<< std::endl;
+            return{};
+        }
+
+    }
+    return vectorBool;
+}
