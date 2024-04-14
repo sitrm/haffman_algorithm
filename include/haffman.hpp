@@ -1,3 +1,6 @@
+#ifndef MY_FUN_HPP
+#define MY_FUN_HPP
+
 #include <iostream>
 #include <string>
 #include <fstream> 
@@ -54,3 +57,7 @@ map<char, string> data_compression_haffman(fs::path& filePath);
 void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root);
 
 std::vector<bool> stringToVectorBool(const std::string &str);
+
+
+
+#endif

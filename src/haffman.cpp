@@ -1,4 +1,4 @@
-#include "haffman.h"
+#include "haffman.hpp"
 //--------------------------------------------------------------------
 
 
@@ -134,7 +134,7 @@ map<char, string> data_compression_haffman(fs::path& inFilePath){
     inFilePath.replace_filename(new_name_file);       //переименовали в пути до файла имя файла на новое 
     // записываем в файл сжатую информацию
     outFile.open(inFilePath);
-    if (!outFile.is_open()) {
+    if (!outFile.is_open()){
         std::cerr << "Error open file(compression)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
@@ -150,7 +150,7 @@ map<char, string> data_compression_haffman(fs::path& inFilePath){
 //-------------------------------------------------------------------------------------
 // декодирование данных. Принимает путь до файла закодированных даннных и указатель на корень построенного дерева хаффмана
 void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root){
-
+    
     std::filesystem::path file_name = filePath.filename();            //  получаем имя файла из пути
     string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
 

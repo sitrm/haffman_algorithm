@@ -1,9 +1,10 @@
-#include "haffman.h"
+#include "haffman.hpp"
 
 
 
 //---------------------------------
-std::filesystem::path PATH = "../src_data/data1.txt";
+fs::path PATH = "../src_data/data1.txt";                        // путь до главного файла для кодирования 
+fs::path path_decode = "../src_data/data1CompressHaffman.txt";  
 
 map<char, string> haffman_codes;
 
@@ -25,6 +26,7 @@ int main() {
     
 
     data_compression_haffman(PATH);
+    decoding_data_haffman_algo(path_decode, root_tree);
 
     return 0;
 }
