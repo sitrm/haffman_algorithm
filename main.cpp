@@ -3,8 +3,8 @@
 
 
 //---------------------------------
-fs::path PATH = "../src_data/data1.txt";                        // путь до главного файла для кодирования 
-fs::path path_decode = "../src_data/data1CompressHaffman.txt";  
+fs::path PATH = "../../src_data/data1.txt";                        // путь до главного файла для кодирования 
+fs::path path_decode = "../../src_data/data1CompressHaffman.txt";  
 
 map<char, string> haffman_codes;
 
