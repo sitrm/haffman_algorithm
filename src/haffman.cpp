@@ -13,15 +13,36 @@ string read_file(const fs::path& filePath) {
         std::cerr << "Error open file(read file)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
-    while (getline(inFile, line)) {    // читаем по строчно 
-
-        data_file += line +"\n";
-    }
+    std::stringstream buffer; // класс для работы с  потоками строк (быстрее)
+    // rdbuf(), который возвращает указатель на буфер файла, и записываем его в объект buffer
+    buffer << inFile.rdbuf();
     inFile.close();
+    data_file = buffer.str();
 
     return data_file;
 }
 //--------------------------------------------------------------------
+
+
+void writeFile(const fs::path& filePath, const string& data){
+    std::ofstream outFile;
+    outFile.open(filePath);
+    if (!outFile.is_open()) {
+        std::cerr << "Unable to open file for writing: " << filePath << std::endl;
+        exit(EXIT_FAILURE);
+        return;
+    }
+    outFile << data;
+
+    // Проверка успешности записи
+    if (!outFile.good()) {
+        std::cerr << "Error occurred while writing to file: " << filePath << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    outFile.close();
+}
+//--------------------------------------------------------------------------
+
 
 map<char, int> getFreqSymbols(const string file_data) {
     map<char, int> dict_freq;       // словаря { символ : частота}

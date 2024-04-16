@@ -25,7 +25,7 @@ void print_dict(map<char, int>);            // вывод словаря {сим
 
 void print_codes_symbols(map<char, int>);
 
-
+void writeFile(const fs::path& filePath, const string& data);
 //реализация узла для дерева
 struct Node {
     char symbol;
