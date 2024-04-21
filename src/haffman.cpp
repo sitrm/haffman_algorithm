@@ -13,6 +13,7 @@ string read_file(const fs::path& filePath) {
         std::cerr << "Error open file(read file)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
+    
     std::stringstream buffer; // класс для работы с  потоками строк (быстрее)
     // rdbuf(), который возвращает указатель на буфер файла, и записываем его в объект buffer
     buffer << inFile.rdbuf();
@@ -64,9 +65,9 @@ void print_dict(map<char, int> dict_freq) {
     }
 }
 //--------------------------------------------------------------------
-void print_codes_symbols(map<char, int> haffman_codes){
+void print_codes_symbols(map<char, int> huffman_codes){
 
-    for (auto& pair : haffman_codes) {
+    for (auto& pair : huffman_codes) {
     std::cout << pair.first << " : " << pair.second << std::endl;
     }
     std::cout << std::endl;
@@ -105,20 +106,20 @@ Node* buildTreeHaffman(map<char, int> symbols_freq) {
 }
 //--------------------------------------------------------------------
 
-void generate_haffman_codes(Node* root, map<char, string>& haffman_codes) {
+void generate_huffman_codes(Node* root, map<char, string>& huffman_codes) {
 
     if (!root) return; // проверяем существование узла
 
     if (root->left) {
         root->left->code = root->code + "0";        //к существующему коду прибавляем "0"
-        generate_haffman_codes(root->left, haffman_codes);
+        generate_huffman_codes(root->left, huffman_codes);
     }
     if (root->right) {
         root->right->code = root->code + "1";        //к существующему коду прибавляем "1"
-        generate_haffman_codes(root->right, haffman_codes);
+        generate_huffman_codes(root->right, huffman_codes);
     }
     if (root->symbol != '\0') {    // если root это лист т е конечный символ в поддереве, то заносим его в словрь кодирования 
-        haffman_codes[root->symbol] = root->code;
+        huffman_codes[root->symbol] = root->code;
     }
 
 }
@@ -136,21 +137,21 @@ string getFileNameWithoutExtension(const std::string& fileName) {
 
 //--------------------------------------------------------------------
 //кодирование данных переданных по пути в новый созданный файл; return: словарь кодирования/декодирования
-map<char, string> data_compression_haffman(fs::path& inFilePath){
+map<char, string> encoding_data_haffman(fs::path& inFilePath){
 
     std::filesystem::path file_name = inFilePath.filename();            //  получаем имя файла из пути
     string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
 
     string new_name_file = filename + "CompressHaffman.txt";
 
-    map<char, string> haffman_codes; // для хранения закодированных символов 
+    map<char, string> huffman_codes; // для хранения закодированных символов 
     std::ofstream outFile;
 
     string data_file = read_file(inFilePath); //читаем файл
 
     Node* root_tree = buildTreeHaffman(getFreqSymbols(data_file)); // передаем словрь {символ :  частота } и строим дерево хаффмана
 
-    generate_haffman_codes(root_tree, haffman_codes);               //  обходим дерево и кодируем символы 
+    generate_huffman_codes(root_tree, huffman_codes);               //  обходим дерево и кодируем символы 
 
     inFilePath.replace_filename(new_name_file);       //переименовали в пути до файла имя файла на новое 
     // записываем в файл сжатую информацию
@@ -161,16 +162,17 @@ map<char, string> data_compression_haffman(fs::path& inFilePath){
     }
     //сжимаем в соответствии с кодами в словаре
     for( char ch : data_file){
-        outFile << haffman_codes[ch];
+        outFile << huffman_codes[ch];
     }
 
     outFile.close();
-    return haffman_codes;
+    std :: cout << "The digital stream has been successfully written to a file" << inFilePath << std::endl;
+    return huffman_codes;
 }
 
 //-------------------------------------------------------------------------------------
 // декодирование данных. Принимает путь до файла закодированных даннных и указатель на корень построенного дерева хаффмана
-void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root){
+void decoding_data_haffman(fs::path& filePath,  map<char, string> huffman_codes){
     
     std::filesystem::path file_name = filePath.filename();            //  получаем имя файла из пути
     string filename = getFileNameWithoutExtension(file_name.string());    // обрезаем до рассширения 
@@ -186,21 +188,20 @@ void decoding_data_haffman_algo(fs::path& filePath,  struct Node* root){
         std::cerr << "Error open file(compression)!\n";
         exit(EXIT_FAILURE);    // обработка исключений при октрытии файла 
     }
-    struct Node* curr = root;
-    
-    for (char s : data_file){
 
-        if (s == '0')
-            curr = curr->left;
-        else if (s =='1')
-            curr = curr->right;
-        //когда достугнули последнего узла
-        if(curr->left == (nullptr) && curr->right == (nullptr)){
-            outFile << curr->symbol;
-            curr = root;
+    string current_code;
+    for (char bit : data_file){
+        current_code +=bit;
+        for (auto& code : huffman_codes){
+            if (code.second == current_code){
+                outFile << code.first;
+                current_code.clear();
+                break;
+            }
         }
     }
     outFile.close();  // не забываем закрыть файл
+    std :: cout << "The digital stream has been successfully decoded and written to a file" << filePath << std::endl;
 }
 
 ////так как в словре кодирования "1010" это строки, то необходимо перевести в вектор bool.Но пока не понятно зачем???....
